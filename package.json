@@ -1,0 +1,14 @@
+{
+  "name": "threadify.js",
+  "version": "0.0.1",
+  "description": "nodejs non-preemption cooperative multitasking model",
+  "main": "index.js",
+  "scripts": {
+    "test": "node ./test.js"
+  },
+  "keywords": [
+    "multitasking"
+  ],
+  "author": "zszszsz",
+  "license": "GPL-3.0"
+}
