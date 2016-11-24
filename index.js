@@ -43,6 +43,7 @@ class Sched {
     }
 
     trigger(sig) {
+        if(!this.signals[sig])return;
         this.ready = this.ready.concat(this.signals[sig]);
         delete this.signals[sig];
         setTimeout(() =>{this.start();}, 0);
@@ -62,8 +63,12 @@ class Sched {
     }
 }
 
+var currentTid = 0;
+
 class Thread {
     constructor(gen, sch) {
+        this.tid = currentTid;
+        currentTid ++;
         this.sched = sch;
         this.runnable = gen(this);
     }
