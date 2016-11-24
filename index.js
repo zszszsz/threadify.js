@@ -1,7 +1,6 @@
 'use strict';
 class Sched {
     constructor(sch) {
-        this.threads = [];
         this.ready = [];
         this.signals = {};
         this.schedFunction = sch;
@@ -13,20 +12,11 @@ class Sched {
         }
         if (T instanceof Thread) {
             T.scheduler = this;
-            this.threads.push(T);
             this.ready.push(T);
             return true;
         }
         return false;
 
-    }
-
-    set schedFunction(sch) {
-        if (sch instanceof Function) this.do_sched = sch;
-    }
-
-    get schedFunction() {
-        return this.do_sched;
     }
 
     isReady(T) {
@@ -35,12 +25,13 @@ class Sched {
         });
     }
 
-    wait(T, sig) {
-        if (!this.signals[sig]) this.signals[sig] = [];
-        this.signals[sig].push(T);
-        this.ready.splice(this.ready.indexOf(T), 1);
-
-    }
+    // wait(T, sig) {
+    //     console.log(T.tid,'waitfor',sig);
+    //     if (!this.signals[sig]) this.signals[sig] = [];
+    //     this.signals[sig].push(T);
+    //     this.ready.splice(this.ready.indexOf(T), 1);
+        
+    // }
 
     trigger(sig) {
         if(!this.signals[sig])return;
@@ -50,10 +41,18 @@ class Sched {
     }
 
     start() {
-        if (this.ready.length == 0)return;
-        var T = this.do_sched(this.ready);
-        if (T.runnable.next().done) {
-            this.ready.splice(this.ready.indexOf(T), 1);
+        if (this.ready.length === 0)return;
+        var T = this.schedFunction(this.ready);
+        var yieldCall = T.runnable.next();
+
+        this.ready.splice(this.ready.indexOf(T), 1);
+        if(yieldCall.value) {
+            var sig = yieldCall.value;
+            if (!this.signals[sig]) this.signals[sig] = [];
+            this.signals[sig].push(T);
+        }
+        else if(!yieldCall.done) {
+            this.ready.push(T);
         }
         setTimeout(() =>{this.start();}, 0);
     }
@@ -75,13 +74,9 @@ class Thread {
     get ready() {
         return this.sched.isReady(this);
     }
-
-    wait(sig) {
-        this.sched.wait(this, sig);
-    }
 }
 
 module.exports = {
     'sched' : Sched,
     'thread' : Thread
-}
+};
