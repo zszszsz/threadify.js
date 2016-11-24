@@ -28,11 +28,13 @@ a thread can prevent itself from being scheduled by waiting for a signal, **`yie
 
 You can wake up all the threads waiting for a signal by **`sched.trigger(signal)`**.
 
-Here is an example where a thread waits for a callback.
-
 There is **no preemption** support in the package, which means a thread may only be interrupted by calling yield by itself.
 
 Which means, A thread will not be interrupted by outer worlds, instead, it will only be interrupted by itself.
+
+Here is an example where a thread waits for a callback.
+
+
 ````
 function* callbackTest(T) {
     var a = 0;
