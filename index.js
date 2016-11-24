@@ -25,14 +25,6 @@ class Sched {
         });
     }
 
-    // wait(T, sig) {
-    //     console.log(T.tid,'waitfor',sig);
-    //     if (!this.signals[sig]) this.signals[sig] = [];
-    //     this.signals[sig].push(T);
-    //     this.ready.splice(this.ready.indexOf(T), 1);
-        
-    // }
-
     trigger(sig) {
         if(!this.signals[sig])return;
         this.ready = this.ready.concat(this.signals[sig]);
