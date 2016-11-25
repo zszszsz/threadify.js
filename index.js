@@ -3,6 +3,7 @@ class Sched {
     constructor(sch) {
         this.ready = [];
         this.signals = {};
+        this.idle = true;
         this.schedFunction = sch;
     }
 
@@ -13,6 +14,10 @@ class Sched {
         if (T instanceof Thread) {
             T.scheduler = this;
             this.ready.push(T);
+            if (this.idle) {
+                this.idle = false;
+                setTimeout(() => {this.start();}, 0);
+            }
             return true;
         }
         return false;
@@ -29,11 +34,17 @@ class Sched {
         if(!this.signals[sig])return;
         this.ready = this.ready.concat(this.signals[sig]);
         delete this.signals[sig];
-        setTimeout(() =>{this.start();}, 0);
+        if(this.idle) {
+            this.idle = false;
+            setTimeout(() => {this.start();}, 0);
+        }
     }
 
     start() {
-        if (this.ready.length === 0)return;
+        if (this.ready.length === 0) {
+            this.idle = true;
+            return;
+        }
         var T = this.schedFunction(this.ready);
         var yieldCall = T.runnable.next();
 
@@ -46,11 +57,17 @@ class Sched {
         else if(!yieldCall.done) {
             this.ready.push(T);
         }
-        setTimeout(() =>{this.start();}, 0);
+        setTimeout(() => {this.start();}, 0);
     }
 
     static fcfs(ready) {
         return ready[0];
+    }
+
+    staric schedulers () {
+        return {
+            'fcfs': fcfs
+        };
     }
 }
 
@@ -68,7 +85,14 @@ class Thread {
     }
 }
 
-module.exports = {
-    'sched' : Sched,
-    'thread' : Thread
+var scheduler = new Sched(Sched.fcfs);
+
+module.exports = (T) => {
+    scheduler.addThread(T);
+};
+
+module.exports.schedulers = Sched.schedulers();
+
+module.exports.setSched = (F) => {
+    scheduler.schedFunction = F;
 };
