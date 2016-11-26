@@ -3,7 +3,7 @@ const threadify = require('./index.js');
 
 function* baseTest(T) {
     for (var k = 0; k < 3; k++) {
-        testResult.push('' + T.tid + ',' + k)
+        testResult.push('' + T.tid + ',' + k);
         if (T.tid === 0) setTimeout(() => {
             testResult.push('c' + T.tid + ',' + k);
         }, 0);
@@ -12,7 +12,7 @@ function* baseTest(T) {
     if (T.tid === 0) yield 'asdf';
     else yield;
 
-    for (var k = 0; k < 3; k++) {
+    for (k = 0; k < 3; k++) {
         testResult.push('' + T.tid + ',' + k);
         yield;
     }
@@ -56,8 +56,9 @@ function checkTest(result, test) {
             expect = [];
             break;
     }
-    JSON.stringify(result) == JSON.stringify(expect) ?
-        console.log('\ntest', test, 'pass\n') :
+    if (JSON.stringify(result) == JSON.stringify(expect))
+        console.log('\ntest', test, 'pass\n');
+    else
         console.log('\ntest', test, 'failed\n\nexpect\n', expect, '\nresult\n', result);
 
 }
