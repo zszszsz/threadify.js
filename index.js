@@ -1,5 +1,5 @@
 'use strict';
-class Sched {
+class Scheduler {
     constructor(sch) {
         this.ready = [];
         this.signals = {};
@@ -22,12 +22,6 @@ class Sched {
         }
         return false;
 
-    }
-
-    isReady(T) {
-        this.ready.find((e) => {
-            return e === T;
-        });
     }
 
     trigger(sig) {
@@ -64,9 +58,9 @@ class Sched {
         return ready[0];
     }
 
-    staric schedulers () {
+    static schedulers() {
         return {
-            'fcfs': fcfs
+            'fcfs': Scheduler.fcfs
         };
     }
 }
@@ -80,19 +74,18 @@ class Thread {
         this.sched = sch;
         this.runnable = gen(this);
     }
-    get ready() {
-        return this.sched.isReady(this);
-    }
 }
 
-var scheduler = new Sched(Sched.fcfs);
+
+
+var sched = new Scheduler(Scheduler.fcfs);
 
 module.exports = (T) => {
-    scheduler.addThread(T);
+    sched.newThread(T);
 };
 
-module.exports.schedulers = Sched.schedulers();
+module.exports.schedulers = Scheduler.schedulers();
 
-module.exports.setSched = (F) => {
-    scheduler.schedFunction = F;
+module.exports.scheduleWith = (F) => {
+    sched.schedFunction = F;
 };

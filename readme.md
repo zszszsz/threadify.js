@@ -3,14 +3,31 @@ threadify.js
 
 a **non-preemptive** multi-threading model for nodejs based on ES6 generator APIs.
 
-to initialize, and add and start the threads, 
+To initialize, 
 ````
-const mt = require('./index.js');
-var sched = new mt.sched(sched);
-sched.newThread(ThreadFunc);
-...
-sched.start();
+var threadify = require('threadify.js');
+threadify(ThreadFunc);
 ````
+
+The default scheduler function is **FCFS**, to change scheduler function,
+````
+threadify.scheduleWith(func);
+````
+
+There is a list of schedule functions at `threadify.schedulers`. You can also write your own.
+
+Schedule function will receive an array of all threads in ready status, and should return the choosen thread. 
+
+You can assert the argument is not empty, you shouldn't return `null`, `undefined`, or thread object not in the array.
+````
+scheduleFunc(threads) {
+    ...
+    return choosenThread;
+}
+
+threadify.scheduleWith(func);
+````
+
 The **Thread Function** should be a ES6 generator defined with **`function*`**, the first argument handed to the generator is the newly created thread object.
 
 Theards can suspend by **`yield;`**. All the callbacks already in the event loop *should* run before the next time the scheduler runs.

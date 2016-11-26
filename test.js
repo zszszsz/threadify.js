@@ -1,5 +1,5 @@
 'use strict';
-const mt = require('./index.js');
+const threadify = require('./index.js');
 
 function* baseTest(T) {
     for (var k = 0; k < 3; k++) {
@@ -20,7 +20,6 @@ function* baseTest(T) {
     if (T.tid === 0) T.sched.trigger('callbackTest');
 }
 
-var sched = new mt.sched(mt.sched.fcfs);
 
 function* callbackTest(T) {
     yield 'callbackTest';
@@ -38,12 +37,11 @@ function* callbackTest(T) {
 
 }
 
-sched.newThread(baseTest);
-sched.newThread(baseTest);
-sched.newThread(callbackTest);
+threadify(baseTest);
+threadify(baseTest);
+threadify(callbackTest);
 // sched.newThread(testThread);
 var testResult = [];
-sched.start();
 
 function checkTest(result, test) {
     var expect = [];
