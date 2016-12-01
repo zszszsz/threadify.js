@@ -60,5 +60,6 @@ function checkTest(result, test) {
         console.log('\ntest', test, 'pass\n');
     else
         console.log('\ntest', test, 'failed\n\nexpect\n', expect, '\nresult\n', result);
+        process.exit(1);
 
 }
