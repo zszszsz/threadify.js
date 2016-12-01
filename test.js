@@ -58,8 +58,9 @@ function checkTest(result, test) {
     }
     if (JSON.stringify(result) == JSON.stringify(expect))
         console.log('\ntest', test, 'pass\n');
-    else
+    else {
         console.log('\ntest', test, 'failed\n\nexpect\n', expect, '\nresult\n', result);
         process.exit(1);
+    }
 
 }
