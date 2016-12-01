@@ -1,6 +1,7 @@
 threadify.js
 ===========
 [![Build Status](https://travis-ci.org/zszszsz/threadify.js.svg?branch=master)](https://travis-ci.org/zszszsz/threadify.js)
+
 a **non-preemptive** multi-threading model for nodejs based on ES6 generator APIs.
 
 To initialize, 
